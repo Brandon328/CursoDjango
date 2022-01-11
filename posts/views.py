@@ -1,4 +1,5 @@
 # Django
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 # from django.http import HttpResponse
 
@@ -38,8 +39,8 @@ posts = [
 ]
 
 
-# Create your views here.
+@login_required
 def list_post(request):
-    return render(request, 'feed.html', {
+    return render(request, 'posts/feed.html', {
         'posts': posts,
     })
