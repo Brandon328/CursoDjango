@@ -41,9 +41,13 @@ def signup_view(request):
         username = request.POST['username']
         password = request.POST['password']
         password_confirmation = request.POST['password_confirmation']
+        email = request.POST['email']
 
         if password != password_confirmation:
             return render(request, 'users/signup.html', {'error': 'Password confirmation does not match'})
+
+        if User.objects.get(email=email):
+            return render(request, 'users/signup.html', {'error': 'Email is already in use'})
 
         try:
             user = User.objects.create_user(
@@ -53,7 +57,7 @@ def signup_view(request):
 
         user.first_name = request.POST['first_name']
         user.last_name = request.POST['last_name']
-        user.email = request.POST['email']
+        user.email = email
         user.save()
 
         profile = Profile(user=user)
