@@ -65,3 +65,8 @@ def signup_view(request):
 
         return redirect('login')
     return render(request, 'users/signup.html')
+
+
+@login_required
+def update_profile_view(request):
+    return render(request, 'users/update_profile.html')

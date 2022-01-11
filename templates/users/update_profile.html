@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block head_content %}
+<title>@{{ request.user.username }}</title>
+{% endblock %}
+
+{% block container %}
+<br><br>
+<h1 class="mt-5">@{{ request.user.username }}</h1>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus, voluptatibus!</p>
+{% endblock %}
