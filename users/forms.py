@@ -17,21 +17,67 @@ class ProfileForm(forms.Form):
 
 class SignupForm(forms.Form):
     """Signup form"""
-    username = forms.CharField(min_length=4, max_length=50,)
+    username = forms.CharField(
+        label=False, 
+        min_length=4, 
+        max_length=50,
+        error_messages={'required': 'Porfavor ingresa un usuario'},
+        widget=forms.TextInput(attrs={
+        'placeholder': 'Username',
+        'class': 'form-control',
+        'required': True,
+        },
+    ))
 
     password = forms.CharField(
+        label=False,
         max_length=70, 
-        widget=forms.PasswordInput())
+        widget=forms.PasswordInput(attrs={
+            'placeholder': 'Password',
+            'class': 'form-control',
+            'required': True
+        })
+    )
     password_confirmation = forms.CharField(
+        label=False,
         max_length=70, 
-        widget=forms.PasswordInput())
+        widget=forms.PasswordInput(attrs={
+            'placeholder': 'Password confirmation',
+            'class': 'form-control',
+            'required': True
+        })
+    )
 
-    first_name = forms.CharField(min_length=2, max_length=50)
-    last_name = forms.CharField(min_length=2, max_length=50)
+    first_name = forms.CharField(
+        label=False,
+        min_length=2,
+        max_length=50,
+        widget=forms.TextInput(attrs={
+            'placeholder': 'First name',
+            'class': 'form-control',
+            'required': True
+        })
+    )
+    last_name = forms.CharField(
+        label=False,
+        min_length=2,
+        max_length=50,
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Last name',
+            'class': 'form-control',
+            'required': True
+        })
+    )
     email = forms.CharField(
+        label=False,
         min_length=6,
         max_length=70,
-        widget=forms.EmailInput)
+        widget=forms.EmailInput(attrs={
+            'placeholder': 'Email',
+            'class': 'form-control',
+            'required': True
+        })
+    )
 
     def clean_username(self):
         """Username must be unique."""
