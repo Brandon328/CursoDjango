@@ -4,17 +4,17 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
-from django.urls import reverse
-from django.contrib import messages
-from django.views.generic import DetailView
+from django.urls import reverse_lazy, reverse
+from django.views.generic import DetailView, FormView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Models
 from django.contrib.auth.models import User
 from posts.models import Post
+from users.models import Profile
 
 # Forms
-from users.forms import ProfileForm, SignupForm
+from users.forms import SignupForm
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):
@@ -56,52 +56,82 @@ def logout_view(request):
     return redirect('users:login')
 
 
-def signup_view(request):
-    """Sign up view"""
-    if request.method == 'POST':
-        form = SignupForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('users:login')
-    else:
-        form=SignupForm()
-    return render(
-        request=request,
-        template_name='users/signup.html',
-        context={
-            'form':form,
-        }
-    )
+class SignupView(FormView):
+    """Users signup view"""
+    template_name = 'users/signup.html'
+    form_class = SignupForm
+    success_url = reverse_lazy('users:login')
 
-@login_required
-def update_profile_view(request):
-    """Update a user's profile view."""
-    profile = request.user.profile
+    def form_valid(self, form):
+        """Save form data."""
+        form.save()
+        return super().form_valid(form)
 
-    if request.method == 'POST':
-        form = ProfileForm(request.POST, request.FILES)
-        if form.is_valid():
-            data = form.cleaned_data
 
-            profile.website = data['website']
-            profile.phone_number = data['phone_number']
-            profile.biography = data['biography']
-            profile.picture = data['picture']
-            profile.save()
+# def signup_view(request):
+#     """Sign up view"""
+#     if request.method == 'POST':
+#         form = SignupForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('users:login')
+#     else:
+#         form=SignupForm()
+#     return render(
+#         request=request,
+#         template_name='users/signup.html',
+#         context={
+#             'form':form,
+#         }
+#     )
 
-            messages.success(
-                request, 'Your profile has been succesfully updated!')
 
-            url = reverse('users:detail', kwargs={'username': request.user.username})
-            return redirect(url)
-    else:
-        form = ProfileForm()
+class UpdateProfileView(LoginRequiredMixin, UpdateView):
+    """Update profile view"""
 
-    return render(
-        request=request,
-        template_name='users/update_profile.html',
-        context={
-            'profile': profile,
-            'user': request.user,
-            'form': form
-        })
+    template_name = 'users/update_profile.html'
+    model = Profile
+    fields = ['website', 'biography', 'phone_number', 'picture']
+
+    def get_object(self):
+        """Return user's profile"""
+        return self.request.user.profile
+
+    def get_success_url(self):
+        """Return to user's profile."""
+        username = self.object.user.username
+        return reverse('users:detail', kwargs={'username':username})
+
+
+# @login_required
+# def update_profile_view(request):
+#     """Update a user's profile view."""
+#     profile = request.user.profile
+
+#     if request.method == 'POST':
+#         form = ProfileForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             data = form.cleaned_data
+
+#             profile.website = data['website']
+#             profile.phone_number = data['phone_number']
+#             profile.biography = data['biography']
+#             profile.picture = data['picture']
+#             profile.save()
+
+#             messages.success(
+#                 request, 'Your profile has been succesfully updated!')
+
+#             url = reverse('users:detail', kwargs={'username': request.user.username})
+#             return redirect(url)
+#     else:
+#         form = ProfileForm()
+
+#     return render(
+#         request=request,
+#         template_name='users/update_profile.html',
+#         context={
+#             'profile': profile,
+#             'user': request.user,
+#             'form': form
+#         })
