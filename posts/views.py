@@ -1,4 +1,5 @@
 # Django
+from queue import Empty
 from re import template
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
@@ -10,7 +11,6 @@ from posts.forms import PostForm
 
 # Models
 from posts.models import Post
-from django.contrib.auth.models import User
 
 
 class PostDetailView(LoginRequiredMixin, DetailView):
@@ -18,8 +18,7 @@ class PostDetailView(LoginRequiredMixin, DetailView):
     template_name= 'posts/detail.html'
     slug_field = 'pk'
     slug_url_kwarg = 'post_id'
-    queryset = User.objects.all()
-    context_object_name = 'user'
+    model=Post
 
     def get_context_data(self, **kwargs):
         """Add post to context"""
