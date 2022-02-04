@@ -12,10 +12,10 @@ from posts.models import Post
 
 class PostDetailView(LoginRequiredMixin, DetailView):
     """Return a post detail"""
-    template_name= 'posts/detail.html'
+    template_name = 'posts/detail.html'
     slug_field = 'pk'
     slug_url_kwarg = 'post_id'
-    model=Post
+    model = Post
 
     def get_context_data(self, **kwargs):
         """Add post to context"""
@@ -24,9 +24,10 @@ class PostDetailView(LoginRequiredMixin, DetailView):
         context['post'] = Post.objects.get(pk=post_id)
         return context
 
+
 class PostFeedView(LoginRequiredMixin, ListView):
     """Return all published posts."""
-    
+
     template_name = 'posts/feed.html'
     model = Post
     ordering = ('-created',)
@@ -43,8 +44,8 @@ class CreatePostView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         """Add user and profile to context."""
         context = super().get_context_data(**kwargs)
-        context['user']=self.request.user
-        context['profile']=self.request.user.profile
+        context['user'] = self.request.user
+        context['profile'] = self.request.user.profile
 
         return context
 

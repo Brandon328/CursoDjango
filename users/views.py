@@ -1,10 +1,6 @@
 """User views"""
 
 # Django
-from re import template
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
 from django.urls import reverse_lazy, reverse
 from django.views.generic import DetailView, FormView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -21,13 +17,13 @@ from users.forms import SignupForm
 
 class UserDetailView(LoginRequiredMixin, DetailView):
     """User detail view"""
-    
+
     template_name = 'users/detail.html'
     slug_field = 'username'
     slug_url_kwarg = 'username'
     queryset = User.objects.all()
     context_object_name = 'user'
-    
+
     def get_context_data(self, **kwargs):
         """Add user's post to context"""
         context = super().get_context_data(**kwargs)
@@ -41,9 +37,10 @@ class LoginView(auth_views.LoginView):
     template_name = 'users/login.html'
 
 
-class LogourView(LoginRequiredMixin, auth_views.LogoutView):
+class LogoutView(LoginRequiredMixin, auth_views.LogoutView):
     """Logout view."""
-    template_name = 'users/logout.html' 
+    template_name = 'users/logout.html'
+
 
 class SignupView(FormView):
     """Users signup view"""
@@ -71,4 +68,4 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         """Return to user's profile."""
         username = self.object.user.username
-        return reverse('users:detail', kwargs={'username':username})
+        return reverse('users:detail', kwargs={'username': username})
